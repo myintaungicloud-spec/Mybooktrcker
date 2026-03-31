@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>LUMINA - Cloud Sync Fixed</title>
+    <title>LUMINA - Original UI Real Sync</title>
     
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -19,7 +19,16 @@
           darkMode: "class",
           theme: {
             extend: {
-              colors: { "surface-dim": "#0e0e12", "primary": "#8ff5ff", "secondary": "#ac89ff", "tertiary": "#ff59e3", "surface-container": "#19191e", "on-surface": "#f3eff6", "on-surface-variant": "#acaab0", "error-dim": "#d7383b" },
+              colors: {
+                "surface-dim": "#0e0e12",
+                "primary": "#8ff5ff",
+                "secondary": "#ac89ff",
+                "tertiary": "#ff59e3",
+                "surface-container": "#19191e",
+                "on-surface": "#f3eff6",
+                "on-surface-variant": "#acaab0",
+                "error-dim": "#d7383b"
+              },
               fontFamily: { "headline": ["Space Grotesk"], "body": ["Manrope"], "label": ["Inter"] },
             },
           },
@@ -39,7 +48,7 @@
 
 <body class="font-body text-on-surface selection:bg-primary/30">
 
-<!-- Header -->
+<!-- Header (Original) -->
 <header class="fixed top-0 w-full z-50 bg-[#0e0e12]/60 backdrop-blur-lg border-b border-white/5 flex justify-between items-center px-6 h-16">
     <div class="flex items-center gap-3"><span class="material-symbols-outlined text-[#8ff5ff]">menu</span></div>
     <div class="flex flex-col items-center">
@@ -54,10 +63,10 @@
 </header>
 
 <main class="pt-24 pb-32 px-6 max-w-2xl mx-auto">
-    <!-- VIEW: LIBRARY -->
+    <!-- VIEW: LIBRARY (Home) -->
     <div class="view-content active space-y-10" id="view-library">
         <section class="space-y-1">
-            <p class="font-label text-xs uppercase tracking-[0.2em] text-primary font-bold">Good Evening</p>
+            <p id="greeting-text" class="font-label text-xs uppercase tracking-[0.2em] text-primary font-bold">Good Evening</p>
             <h2 class="font-headline text-4xl font-bold tracking-tight">Bookshelf Home</h2>
         </section>
 
@@ -65,10 +74,10 @@
             <div class="relative glass-card rounded-[1.5rem] p-8 overflow-hidden">
                 <div class="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 liquid-gradient rounded-full blur-[60px] opacity-30"></div>
                 <div class="flex flex-col h-full justify-between relative z-10">
-                    <div><h3 class="font-headline text-3xl font-extrabold leading-tight">Cloud Storage<br/>Sync Status</h3></div>
+                    <div><h3 class="font-headline text-3xl font-extrabold leading-tight">Cloud Reading<br/>Sync Active</h3></div>
                     <div class="mt-8 flex items-end justify-between">
                         <div class="flex flex-col">
-                            <span id="book-count-display" class="text-4xl font-headline font-black text-primary">0</span>
+                            <span id="book-count" class="text-4xl font-headline font-black text-primary">0</span>
                             <span class="font-label text-[10px] uppercase tracking-wider text-on-surface-variant">Books Devoured</span>
                         </div>
                     </div>
@@ -77,11 +86,9 @@
         </section>
 
         <section class="space-y-6">
-            <div class="flex justify-between items-center">
-                <h4 class="font-headline text-xl font-bold">Reading Now</h4>
-            </div>
+            <h4 class="font-headline text-xl font-bold">Reading Now</h4>
             <div id="library-container" class="space-y-4">
-                <p class="text-on-surface-variant text-center py-10 italic">Please login to sync your library...</p>
+                <p class="text-on-surface-variant text-center py-10 italic">Please login to see your library...</p>
             </div>
         </section>
     </div>
@@ -89,12 +96,12 @@
     <!-- VIEW: DISCOVER -->
     <div class="view-content space-y-10" id="view-discover">
         <h2 class="font-headline text-4xl font-bold tracking-tight">Discover</h2>
-        <div onclick="addSampleBook()" class="glass-card rounded-2xl p-8 text-center border-dashed border-2 border-primary/30 cursor-pointer hover:bg-primary/5 transition-all">
-            <span class="font-headline font-bold text-xl text-primary">+ Add New Book To Cloud</span>
+        <div onclick="addSampleBook()" class="glass-card rounded-2xl p-10 text-center border-dashed border-2 border-primary/20 cursor-pointer hover:bg-primary/5 transition-all">
+            <span class="font-headline font-bold text-xl text-primary">+ Add Sample Book to Cloud</span>
         </div>
     </div>
 
-    <!-- VIEW: PROFILE -->
+    <!-- VIEW: PROFILE (Original UI) -->
     <div class="view-content space-y-10" id="view-profile">
         <section class="flex flex-col items-center text-center space-y-4">
             <div class="w-32 h-32 rounded-full p-1 bg-gradient-to-br from-primary via-secondary to-tertiary">
@@ -104,33 +111,48 @@
             </div>
             <div>
                 <h2 id="profile-name" class="font-headline text-2xl font-bold">Guest User</h2>
-                <p id="profile-status" class="text-primary font-bold text-xs uppercase tracking-widest mt-1">Not Connected</p>
+                <p id="profile-status" class="text-primary font-bold text-xs uppercase tracking-widest mt-1">NOT CONNECTED</p>
             </div>
         </section>
 
         <section class="glass-card rounded-3xl overflow-hidden border border-white/5">
             <div class="p-2">
-                <button onclick="toggleAccountSettings()" class="w-full flex items-center justify-between p-4 hover:bg-white/5 rounded-2xl">
+                <button onclick="toggleSettings()" class="w-full flex items-center justify-between p-4 hover:bg-white/5 rounded-2xl transition-all group">
                     <div class="flex items-center gap-4"><span class="material-symbols-outlined">account_circle</span><span class="font-medium">Account Settings</span></div>
                     <span id="chevron" class="material-symbols-outlined text-sm transition-transform">chevron_right</span>
                 </button>
-                <div id="account-settings-content" class="hidden p-4 border-t border-white/5 flex flex-col items-center gap-4">
-                    <button id="login-btn" onclick="signIn()" class="bg-white text-black px-8 py-3 rounded-full font-bold flex items-center gap-2 shadow-xl hover:scale-105 transition-all">
-                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" class="w-5 h-5"/> Sign in with Google
-                    </button>
-                    <div id="user-info" class="hidden text-center">
-                        <p id="user-email" class="text-xs text-primary font-medium mb-3"></p>
-                        <button onclick="signOut()" class="text-[10px] text-error-dim font-black uppercase tracking-widest border border-error-dim/20 px-4 py-2 rounded-full">Disconnect Account</button>
+
+                <div id="settings-content" class="hidden px-4 pb-4 animate-fadeIn">
+                    <div class="p-5 rounded-2xl bg-white/5 border border-white/10 flex flex-col items-center gap-4">
+                        <p class="text-[11px] text-on-surface-variant font-bold uppercase tracking-wider">Cloud Storage Sync</p>
+                        
+                        <button id="google-login-btn" onclick="signIn()" class="bg-white text-black px-8 py-3 rounded-full font-bold flex items-center gap-2 hover:scale-105 transition-all">
+                            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" class="w-4 h-4"/> Sign in with Google
+                        </button>
+                        
+                        <div id="user-info" class="hidden text-center">
+                             <p id="user-email" class="text-xs text-primary font-medium mb-3"></p>
+                             <button onclick="signOut()" class="text-[10px] text-error-dim font-black uppercase tracking-widest hover:underline">Disconnect Account</button>
+                        </div>
                     </div>
                 </div>
+
+                <button class="w-full flex items-center justify-between p-4 hover:bg-white/5 rounded-2xl transition-all">
+                    <div class="flex items-center gap-4"><span class="material-symbols-outlined">notifications</span><span class="font-medium">Notifications</span></div>
+                    <span class="material-symbols-outlined text-sm">chevron_right</span>
+                </button>
+                <div class="h-px bg-white/5 my-2 mx-4"></div>
+                <button onclick="signOut()" class="w-full flex items-center justify-between p-4 hover:bg-error-dim/10 rounded-2xl transition-all text-error-dim">
+                    <div class="flex items-center gap-4"><span class="material-symbols-outlined">logout</span><span class="font-bold">Log Out</span></div>
+                </button>
             </div>
         </section>
     </div>
 </main>
 
-<!-- Nav Bar -->
+<!-- Bottom Nav (Original UI) -->
 <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-lg rounded-full bg-[#25252b]/40 backdrop-blur-2xl border border-white/10 h-20 flex justify-around items-center px-2 z-50">
-    <div class="absolute h-12 bg-primary/10 border border-primary/20 rounded-full transition-all duration-500" id="nav-indicator" style="width: 33.33%; left: 0%;"></div>
+    <div class="absolute h-12 bg-primary/10 border border-primary/20 rounded-full transition-all duration-500 ease-out" id="nav-indicator" style="width: 33.33%; left: 0%;"></div>
     <a class="nav-item active relative z-10 flex flex-col items-center justify-center w-1/3 h-full" onclick="switchView('library', this)"><span class="material-symbols-outlined">auto_stories</span><span class="text-[10px] font-bold uppercase mt-1">Library</span></a>
     <a class="nav-item relative z-10 flex flex-col items-center justify-center text-zinc-500 w-1/3 h-full" onclick="switchView('discover', this)"><span class="material-symbols-outlined">explore</span><span class="text-[10px] font-bold uppercase mt-1">Discover</span></a>
     <a class="nav-item relative z-10 flex flex-col items-center justify-center text-zinc-500 w-1/3 h-full" onclick="switchView('profile', this)"><span class="material-symbols-outlined">person</span><span class="text-[10px] font-bold uppercase mt-1">Profile</span></a>
@@ -139,65 +161,62 @@
 <script>
     // --- (၁) Firebase Config ---
     const firebaseConfig = {
-        apiKey: "AIzaSyCqiILWM9uqNi_AFuZ2Hr3tkBMzNFzAsUg",
-        authDomain: "booknote-200391.firebaseapp.com",
-        projectId: "booknote-200391",
-        storageBucket: "booknote-200391.firebasestorage.app",
-        messagingSenderId: "1068286597810",
-        appId: "1:1068286597810:web:0a05cb76646053378987ab"
+      apiKey: "AIzaSyCqiILWM9uqNi_AFuZ2Hr3tkBMzNFzAsUg",
+      authDomain: "booknote-200391.firebaseapp.com",
+      projectId: "booknote-200391",
+      storageBucket: "booknote-200391.firebasestorage.app",
+      messagingSenderId: "1068286597810",
+      appId: "1:1068286597810:web:0a05cb76646053378987ab"
     };
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // --- (၂) Login Logic (Handling Redirect Result) ---
+    // --- (၂) Login/Auth Logic ---
     function signIn() {
         const provider = new firebase.auth.GoogleAuthProvider();
         auth.signInWithRedirect(provider);
     }
 
-    function signOut() {
-        auth.signOut().then(() => location.reload());
-    }
+    function signOut() { auth.signOut().then(() => location.reload()); }
 
-    // Redirect ကနေ ပြန်လာတဲ့ User data ကို ဖမ်းယူမယ်
+    // Redirect ကနေ ပြန်လာရင် data ကို ဖမ်းမယ်
     auth.getRedirectResult().then(result => {
-        if (result.user) {
-            updateUI(result.user);
-        }
-    }).catch(error => console.error("Login Error:", error));
+        if (result.user) updateProfileUI(result.user);
+    });
 
-    // Session ရှိမရှိ စစ်ဆေးမယ်
+    // Auth State ပြောင်းတိုင်း UI ကို update လုပ်မယ်
     auth.onAuthStateChanged(user => {
         if (user) {
-            updateUI(user);
+            updateProfileUI(user);
             fetchBooks(user.uid);
         }
     });
 
-    function updateUI(user) {
+    function updateProfileUI(user) {
         document.getElementById("profile-name").innerText = user.displayName;
         document.getElementById("profile-status").innerText = "ELITE COLLECTOR • SYNC ACTIVE";
         document.getElementById("main-avatar").src = user.photoURL;
         document.getElementById("nav-avatar").src = user.photoURL;
         document.getElementById("user-email").innerText = user.email;
+        document.getElementById("greeting-text").innerText = "Welcome back, " + user.displayName.split(' ')[0];
         
-        document.getElementById("login-btn").classList.add("hidden");
+        document.getElementById("google-login-btn").classList.add("hidden");
         document.getElementById("user-info").classList.remove("hidden");
     }
 
-    // --- (၃) Firestore Sync ---
+    // --- (၃) Database Logic ---
     function fetchBooks(uid) {
         db.collection("users").doc(uid).collection("myBooks").onSnapshot(snap => {
             const container = document.getElementById('library-container');
-            const countDisplay = document.getElementById('book-count-display');
+            const countDisplay = document.getElementById('book-count');
             const books = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
             
             countDisplay.innerText = books.length;
 
             if (books.length === 0) {
-                container.innerHTML = `<p class="text-on-surface-variant text-center py-10 italic">Your cloud library is empty.</p>`;
+                container.innerHTML = `<p class="text-on-surface-variant text-center py-10 italic">No cloud books yet. Add one from Discover!</p>`;
                 return;
             }
 
@@ -214,9 +233,7 @@
                                 <span>${book.progress}% Complete</span>
                                 <button onclick="updateProgress('${book.id}', ${book.progress})" class="underline">+10%</button>
                             </div>
-                            <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden">
-                                <div class="h-full liquid-gradient" style="width: ${book.progress}%"></div>
-                            </div>
+                            <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden"><div class="h-full liquid-gradient" style="width: ${book.progress}%"></div></div>
                         </div>
                     </div>
                 </div>`).join('');
@@ -224,41 +241,34 @@
     }
 
     function addSampleBook() {
-        const user = auth.currentUser;
-        if (!user) return alert("Please Login First!");
-        db.collection("users").doc(user.uid).collection("myBooks").add({
-            title: "Project Hail Mary",
-            author: "Andy Weir",
-            progress: 20,
-            cover: "https://covers.openlibrary.org/b/id/10543205-L.jpg"
+        if (!auth.currentUser) return alert("Please Login First!");
+        db.collection("users").doc(auth.currentUser.uid).collection("myBooks").add({
+            title: "Project Hail Mary", author: "Andy Weir", progress: 20, cover: "https://covers.openlibrary.org/b/id/10543205-L.jpg"
         });
-        alert("Sample book added to your cloud library!");
     }
 
     function updateProgress(id, current) {
-        const next = current >= 100 ? 0 : current + 10;
-        db.collection("users").doc(auth.currentUser.uid).collection("myBooks").doc(id).update({ progress: next });
+        db.collection("users").doc(auth.currentUser.uid).collection("myBooks").doc(id).update({ progress: Math.min(current + 10, 100) });
     }
 
-    // --- (၄) Navigation Logic ---
+    // --- (၄) Original UI Navigation ---
     function switchView(id, el) {
         document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
         document.getElementById('view-' + id).classList.add('active');
         const navItems = document.querySelectorAll('.nav-item');
         const indicator = document.getElementById('nav-indicator');
-        navItems.forEach(n => { n.classList.remove('active', 'text-primary'); n.classList.add('text-zinc-500'); });
-        el.classList.add('active', 'text-primary');
+        navItems.forEach(n => { n.classList.remove('active', 'text-[#8ff5ff]'); n.classList.add('text-zinc-500'); });
+        el.classList.add('active', 'text-[#8ff5ff]');
         indicator.style.left = (el.getBoundingClientRect().left - el.parentElement.getBoundingClientRect().left) + 'px';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo(0,0);
     }
 
-    function toggleAccountSettings() {
-        const content = document.getElementById('account-settings-content');
+    function toggleSettings() {
+        const content = document.getElementById('settings-content');
         const chevron = document.getElementById('chevron');
         content.classList.toggle('hidden');
         chevron.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(90deg)';
     }
 </script>
-
 </body>
 </html>
